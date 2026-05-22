@@ -90,6 +90,28 @@ Normal human temperature ranges were constrained approximately between:
 - Exploratory preparation
 
 ---
+Day 3 – Clinical Data Visualization
+
+For Day 3, I performed exploratory data visualization on the emergency triage dataset using Python and matplotlib in Google Colab. I selected the Pulse column because pulse rate is an important clinical vital sign used to assess cardiovascular stability and patient condition in emergency medicine.
+
+Visualizations Created
+Histogram of Pulse distribution
+Scatter plot of Pulse vs Age
+Clinical tachycardia threshold visualization
+Method Used
+
+The Pulse and Age columns were converted into numeric format using pandas to ensure accurate plotting and analysis. Missing values were removed before visualization. A histogram was created to observe the overall distribution of pulse readings across patients, while a scatter plot was used to examine how pulse values vary with age.
+
+To make the analysis more clinically meaningful, I added a tachycardia threshold line at 100 bpm to highlight potentially abnormal pulse readings. This approach helps identify trends, outliers, and possible at-risk patients within the dataset.
+
+Skills Practiced
+Data visualization
+Exploratory Data Analysis (EDA)
+Clinical data interpretation
+matplotlib plotting
+Healthcare analytics reasoning
+
+---
 
 # Repository Contents
 
