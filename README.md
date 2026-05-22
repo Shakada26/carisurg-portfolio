@@ -1,9 +1,9 @@
 # CariSurg MedTech Pathways Programme – Week 0
 
 ## Student Information
-**Name:** Shakada Blake  
-**Programme:** CariSurg MedTech Pathways Cohort 2026  
-**Start Date:** May 2026  
+Name: Shakada Blake  
+Programme: CariSurg MedTech Pathways Cohort 2026  
+Start Date: May 2026  
 
 ---
 
@@ -30,7 +30,7 @@ During Day 0, I completed the initial setup for the programme by:
 - creating a public GitHub repository,
 - and learning the workflow for uploading and managing notebooks.
 
-### Tools Used
+## Tools Used
 - Google Colab
 - Google Drive
 - GitHub
@@ -40,25 +40,26 @@ During Day 0, I completed the initial setup for the programme by:
 
 # Day 1 – Gender Column Cleaning
 
-For Day 1, I cleaned the `Gender` column using Python and pandas.
+For Day 1, I cleaned the Gender column using Python and pandas.
 
-### Method Used
+## Method Used
+
 The dataset contained inconsistent values including:
-- `Male`
-- `MALE`
-- `Female`
-- `FEMALE`
-- `0`
-- `1`
+- Male
+- MALE
+- Female
+- FEMALE
+- 0
+- 1
 
 To standardize the data:
 1. String formatting was normalized using uppercase conversion.
 2. Extra whitespace was removed.
 3. Different gender representations were mapped into consistent labels:
-   - `Male`
-   - `Female`
+   - Male
+   - Female
 
-### Skills Practiced
+## Skills Practiced
 - Data cleaning
 - Categorical variable standardization
 - pandas preprocessing
@@ -68,21 +69,21 @@ To standardize the data:
 
 # Day 2 – Temperature Vital Sign Cleaning
 
-For Day 2, I selected the `Temperature` vital sign column for cleaning and preprocessing.
+For Day 2, I selected the Temperature vital sign column for cleaning and preprocessing.
 
-### Method Used
+## Method Used
+
 The following preprocessing steps were performed:
 1. Temperature values were converted into numeric format using pandas.
 2. Missing or invalid values were identified.
 3. Unrealistic temperature readings outside the normal physiological range were removed.
 4. Summary statistics were reviewed using `.describe()`.
 
-### Cleaning Threshold
-Normal human temperature ranges were constrained approximately between:
+## Cleaning Threshold
 
 30°C ≤ Temperature ≤ 45°C
 
-### Skills Practiced
+## Skills Practiced
 - Clinical data preprocessing
 - Numeric data cleaning
 - Missing value identification
@@ -90,26 +91,28 @@ Normal human temperature ranges were constrained approximately between:
 - Exploratory preparation
 
 ---
-Day 3 – Clinical Data Visualization
+
+# Day 3 – Clinical Data Visualization
 
 For Day 3, I performed exploratory data visualization on the emergency triage dataset using Python and matplotlib in Google Colab. I selected the Pulse column because pulse rate is an important clinical vital sign used to assess cardiovascular stability and patient condition in emergency medicine.
 
-Visualizations Created
-Histogram of Pulse distribution
-Scatter plot of Pulse vs Age
-Clinical tachycardia threshold visualization
-Method Used
+## Visualizations Created
+- Histogram of Pulse distribution
+- Scatter plot of Pulse vs Age
+- Clinical tachycardia threshold visualization
+
+## Method Used
 
 The Pulse and Age columns were converted into numeric format using pandas to ensure accurate plotting and analysis. Missing values were removed before visualization. A histogram was created to observe the overall distribution of pulse readings across patients, while a scatter plot was used to examine how pulse values vary with age.
 
 To make the analysis more clinically meaningful, I added a tachycardia threshold line at 100 bpm to highlight potentially abnormal pulse readings. This approach helps identify trends, outliers, and possible at-risk patients within the dataset.
 
-Skills Practiced
-Data visualization
-Exploratory Data Analysis (EDA)
-Clinical data interpretation
-matplotlib plotting
-Healthcare analytics reasoning
+## Skills Practiced
+- Data visualization
+- Exploratory Data Analysis (EDA)
+- Clinical data interpretation
+- matplotlib plotting
+- Healthcare analytics reasoning
 
 ---
 
@@ -118,7 +121,8 @@ Healthcare analytics reasoning
 | File | Description |
 |---|---|
 | `day1_gender_cleaning.ipynb` | Gender column cleaning notebook |
-| `day2_temperature_cleaning.ipynb` | Temperature cleaning notebook |
+| `day2_temperature_cleaning.ipynb` | Temperature vital sign cleaning notebook |
+| `day3_data_visualization.ipynb` | Clinical data visualization notebook containing histogram and scatter plot analysis |
 | `README.md` | Week 0 documentation and project overview |
 
 ---
@@ -134,5 +138,13 @@ This programme aims to build foundational skills in:
 
 ---
 
+# Future Goals
+
+As the programme progresses, this repository will continue to expand with additional clinical AI projects, data analysis tasks, and healthcare technology workflows developed throughout the CariSurg MedTech Pathways Programme.
+
+---
+
 # Author
-Shakada Blake
+
+Shakada Blake  
+CariSurg MedTech Pathways Cohort 2026
