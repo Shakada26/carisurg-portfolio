@@ -116,6 +116,23 @@ To make the analysis more clinically meaningful, I added a tachycardia threshold
 
 ---
 
+# Day 4 – Clinical Vital Sign Interpretation
+
+For Day 4, I selected Pulse as the vital sign for clinical interpretation because it is a critical indicator of cardiovascular and hemodynamic stability in emergency medicine.
+
+Pulse rate, clinically referred to as heart rate, represents the number of ventricular contractions occurring per minute and serves as a fundamental indicator of cardiovascular and hemodynamic function. In the adult population, the normal resting pulse range is generally accepted as 60–100 beats per minute (bpm). A pulse exceeding 100 bpm is classified as tachycardia and may be associated with pyrexia, hypovolemia, dehydration, infection, anemia, pain, anxiety, or underlying cardiac dysrhythmias. Conversely, a pulse below 60 bpm is considered bradycardia and may occur secondary to conduction abnormalities, pharmacological agents such as beta-blockers, hypothyroidism, or increased vagal tone in highly conditioned individuals. Within the emergency triage setting, pulse assessment is clinically significant because deviations from the normal range may indicate early physiological deterioration, circulatory compromise, or systemic instability, thereby assisting healthcare professionals in prioritizing patient acuity, initiating timely intervention, and guiding escalation of care.
+
+## Clinical Ranges
+- Normal Pulse: 60–100 bpm
+- Tachycardia: >100 bpm
+- Bradycardia: <60 bpm
+
+## Clinical Importance
+Pulse abnormalities may indicate cardiovascular compromise, infection, hypovolemia, physiological stress, or systemic instability. Continuous pulse monitoring during triage assists healthcare professionals in rapidly identifying patients who may require urgent intervention or escalation of care.
+
+---
+
+
 # Repository Contents
 
 | File | Description |
