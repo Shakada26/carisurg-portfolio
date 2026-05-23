@@ -140,6 +140,7 @@ Pulse abnormalities may indicate cardiovascular compromise, infection, hypovolem
 | `day1_gender_cleaning.ipynb` | Gender column cleaning notebook |
 | `day2_temperature_cleaning.ipynb` | Temperature vital sign cleaning notebook |
 | `day3_data_visualization.ipynb` | Clinical data visualization notebook containing histogram and scatter plot analysis |
+| `day4_clinical_interpretation.ipynb` | Clinical interpretation of Pulse vital sign |
 | `README.md` | Week 0 documentation and project overview |
 
 ---
