@@ -1,0 +1,43 @@
+CariSurg MedTech Pathways Programme - Week 0
+Student Information
+Name: Shakada Blake
+Programme: CariSurg MedTech Pathways Cohort 2026
+Start Date: May 2026
+For Day 4, I selected Pulse as the vital sign for clinical interpretation because it is a critical indicator of cardiovascular and hemodynamic stability in emergency medicine. Pulse rate, clinically referred to as heart rate, represents the number of ventricular contractions occurring per minute and is routinely assessed during emergency triage to evaluate patient stability and circulatory function.
+In the adult population, the normal resting pulse range is generally accepted as 60 to 100 beats per minute . A pulse exceeding 100 bpm is classified as tachycardia and may be associated with pyrexia, hypovolemia, dehydration, infection, anemia, pain, anxiety, or underlying cardiac dysrhythmias. Conversely, a pulse below 60 bpm is considered bradycardia and may occur secondary to conduction abnormalities, pharmacological agents such as beta-blockers, hypothyroidism, or increased vagal tone in highly conditioned individuals.
+Within the emergency triage setting, pulse assessment is clinically significant because deviations from the normal range may indicate early physiological deterioration, circulatory compromise, or systemic instability. Monitoring pulse enables healthcare professionals to rapidly prioritize patient acuity, initiate timely intervention, and guide escalation of care when necessary.
+
+Pulse Rate Classifications (Normal, Tachycardia, and Bradycardia) Derived from Provided Dataset 
+
+
+
+pulse
+pulse_numeric
+pulse_classification
+1
+80.0
+80.0
+Normal
+2
+92.0
+92.0
+Normal
+0
+128.0
+128.0
+Tachycardia
+9
+130.0
+130.0
+Tachycardia
+43
+58.0
+58.0
+Bradycardia
+56
+56.0
+56.0
+Bradycardia
+
+
+
