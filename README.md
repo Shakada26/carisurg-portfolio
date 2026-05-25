@@ -122,6 +122,24 @@ For Day 4, I selected Pulse as the vital sign for clinical interpretation becaus
 
 Pulse rate, clinically referred to as heart rate, represents the number of ventricular contractions occurring per minute and serves as a fundamental indicator of cardiovascular and hemodynamic function. In the adult population, the normal resting pulse range is generally accepted as 60–100 beats per minute (bpm). A pulse exceeding 100 bpm is classified as tachycardia and may be associated with pyrexia, hypovolemia, dehydration, infection, anemia, pain, anxiety, or underlying cardiac dysrhythmias. Conversely, a pulse below 60 bpm is considered bradycardia and may occur secondary to conduction abnormalities, pharmacological agents such as beta-blockers, hypothyroidism, or increased vagal tone in highly conditioned individuals. Within the emergency triage setting, pulse assessment is clinically significant because deviations from the normal range may indicate early physiological deterioration, circulatory compromise, or systemic instability, thereby assisting healthcare professionals in prioritizing patient acuity, initiating timely intervention, and guiding escalation of care.
 
+---
+
+Day 5 – Missing Clinical Variables in Emergency Triage Dataset (Blood Glucose, Pain Score, Weight, Chief Complaint)
+
+The emergency department triage dataset contains key physiological vital signs such as pulse, temperature, respiratory rate, blood pressure, and oxygen saturation. However, several clinically important variables are missing that are essential for complete patient assessment and accurate triage decision-making.
+
+From my perspective as a medical assistant, the most important missing variable is blood glucose level, which is critical for identifying acute metabolic emergencies such as hypoglycemia, diabetic ketoacidosis (DKA), and hyperosmolar hyperglycemic state (HHS). These conditions may present with non-specific symptoms and may not be immediately reflected in basic vital signs.
+
+Another key missing variable is pain score (0–10 scale). Pain is a clinically significant indicator of underlying pathology and is routinely used in emergency departments to identify potential surgical or vascular emergencies such as appendicitis, renal colic, torsion, and abdominal aortic aneurysm.
+
+Patient weight is also an important clinical factor that is not included in the dataset. It is required for medication dosing, fluid resuscitation calculations, and accurate physiological interpretation in emergency care settings.
+
+In addition, chief complaint is a critical missing component. Vital signs alone do not provide clinical context, and the reason for presentation is essential for correct interpretation. For example, tachycardia may be caused by anxiety in one patient but may indicate sepsis, hemorrhage, or pulmonary embolism in another.
+
+Including these additional variables would improve clinical decision-making, strengthen triage accuracy, and enhance the predictive performance of AI-driven healthcare systems by combining physiological data with essential clinical context.
+
+---
+
 ## Clinical Ranges
 - Normal Pulse: 60–100 bpm
 - Tachycardia: >100 bpm
