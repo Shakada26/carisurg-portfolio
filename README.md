@@ -1,4 +1,4 @@
-# CariSurg MedTech Pathways Programme – Week 0
+# CariSurg MedTech Pathways Programme – Week 0 Portfolio
 
 ## Student Information
 Name: Shakada Blake  
@@ -9,7 +9,7 @@ Start Date: May 2026
 
 # Project Overview
 
-This repository contains my Week 0 onboarding tasks for the CariSurg MedTech Pathways Programme.
+This repository contains my Week 0 portfolio and foundational clinical AI tasks completed during the CariSurg MedTech Pathways Programme.
 
 The purpose of Week 0 is to:
 - establish my technical environment,
@@ -21,6 +21,13 @@ The dataset used is a reduced and de-identified emergency department triage data
 
 ---
 
+# Dataset Information
+
+The project utilised a reduced and de-identified emergency department triage dataset containing demographic information and vital signs for educational and portfolio development purposes within the CariSurg MedTech Pathways Programme.
+
+Due to educational usage restrictions, the original dataset source is not publicly distributed within this repository.
+
+---
 # Day 0 – Environment Setup
 
 During Day 0, I completed the initial setup for the programme by:
@@ -124,7 +131,7 @@ Pulse rate, clinically referred to as heart rate, represents the number of ventr
 
 ---
 
-Day 5 – Missing Clinical Variables in Emergency Triage Dataset (Blood Glucose, Pain Score, Weight, Chief Complaint)
+# Day 5 – Missing Clinical Variables in Emergency Triage Dataset (Blood Glucose, Pain Score, Weight, Chief Complaint)
 
 The emergency department triage dataset contains key physiological vital signs such as pulse, temperature, respiratory rate, blood pressure, and oxygen saturation. However, several clinically important variables are missing that are essential for complete patient assessment and accurate triage decision-making.
 
@@ -140,28 +147,57 @@ Including these additional variables would improve clinical decision-making, str
 
 ---
 
-## Clinical Ranges
-- Normal Pulse: 60–100 bpm
-- Tachycardia: >100 bpm
-- Bradycardia: <60 bpm
+# Day 6 – Digital Triage Workflow & Pseudocode Design
 
-## Clinical Importance
-Pulse abnormalities may indicate cardiovascular compromise, infection, hypovolemia, physiological stress, or systemic instability. Continuous pulse monitoring during triage assists healthcare professionals in rapidly identifying patients who may require urgent intervention or escalation of care.
+For Day 6, I designed a simplified digital triage workflow demonstrating how patient vital signs can be processed within an AI-assisted emergency department system.
+
+The task focused on creating:
+- pseudocode logic,
+- clinical decision pathways,
+- and a visual flowchart representing the triage process.
+
+The workflow evaluates:
+- oxygen saturation (SpO₂),
+- pulse rate,
+- and temperature
+
+to categorise patients into:
+- High Risk
+- Moderate Risk
+- Low Risk
+
+The flowchart was developed using Python and Graphviz in Google Colab to simulate how digital healthcare systems support triage prioritisation and clinical decision-making.
+
+## Skills Practiced
+- Pseudocode design
+- Clinical workflow modelling
+- Graphviz flowchart development
+- AI-assisted healthcare reasoning
+- Emergency triage system design
+  
+---
+
+# Workflow Summary
+
+Throughout Week 0, the project progressed from foundational data cleaning and preprocessing to exploratory analysis, clinical interpretation, and finally digital triage workflow design.
+
+This workflow demonstrates the integration of healthcare analytics, clinical reasoning, and AI-assisted system modelling within an emergency medicine context.
 
 ---
 
-
 # Repository Contents
 
-| File                                     | Description                                                                                                                   |
-| ---------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| day1_gender_cleaning.ipynb               | Cleaning and standardisation of Gender column using pandas (categorical mapping and encoding)                                 |
-| day2_temperature_cleaning.ipynb          | Cleaning and validation of Temperature vital sign, including numeric conversion and outlier removal                           |
-| day3_data_visualization.ipynb            | Exploratory data analysis using histograms and scatter plots for Pulse and Age, including tachycardia threshold visualization |
-| day4_pulse_clinical_interpretation.ipynb | Clinical interpretation of Pulse as a vital sign, including normal ranges and triage significance                             |
-| day5_missing_variables_analysis.ipynb    | Clinical critique of missing variables in the dataset including glucose, pain score, weight, and chief complaint              |
-| README.md                                | Full Week 0 documentation and project summary                                                                                 |
-
+| File                                     | Description                                                                                                                               |
+| ---------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| day1_gender_cleaning.ipynb               | Cleaning and standardisation of the Gender column using pandas categorical mapping and preprocessing techniques                           |
+| day2_temperature_cleaning.ipynb          | Clinical preprocessing and validation of Temperature vital sign data, including numeric conversion and outlier removal                    |
+| day3_data_visualization.ipynb            | Exploratory Data Analysis (EDA) using histograms and scatter plots for Pulse and Age, including tachycardia threshold visualization       |
+| day4_pulse_clinical_interpretation.ipynb | Clinical interpretation of Pulse as a vital sign, including normal ranges, tachycardia, bradycardia, and emergency triage significance    |
+| day5_missing_variables_analysis.ipynb    | Clinical critique of missing variables in the emergency triage dataset including glucose, pain score, patient weight, and chief complaint |
+| day6_triage_workflow.ipynb               | Digital triage workflow design using pseudocode, clinical logic, and Graphviz flowchart modelling                                         |
+| a4_ai_flowchart.png                      | Visual AI-assisted emergency department triage workflow flowchart created using Python and Graphviz                                       |
+| task5_final_notebook.ipynb               | Final integrated notebook combining Week 0 tasks, documentation, clinical workflow logic, and portfolio deliverables                      |
+| README.md                                | Full Week 0 portfolio documentation, project overview, work                                                                               |                                                                          
 
 ---
 
