@@ -1,0 +1,2 @@
+docs/README.md
+This folder contains Week 1 memos, proposals, and supporting documentation for the CariSurg MedTech Pathways Programme.
