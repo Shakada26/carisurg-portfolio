@@ -217,6 +217,8 @@ This programme aims to build foundational skills in:
 As the programme progresses, this repository will continue to expand with additional clinical AI projects, data analysis tasks, and healthcare technology workflows developed throughout the CariSurg MedTech Pathways Programme.
 
 ---
+Week 2: feature branch created for repository refactor and audit workflow.
+
 
 # Author
 
