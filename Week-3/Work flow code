@@ -1,0 +1,24 @@
+flowchart TD
+    %% Custom styling for GitHub light/dark mode compatibility
+    classDef standard fill:#f6f8fa,stroke:#d0d7de,stroke-width:2px,color:#24292f,rx:8px,ry:8px;
+    classDef friction fill:#ffebe9,stroke:#cf222e,stroke-width:2px,color:#cf222e,rx:8px,ry:8px;
+    classDef aiNode fill:#ddf4ff,stroke:#0969da,stroke-width:2px,color:#0969da,rx:8px,ry:8px;
+    classDef human fill:#e6ffec,stroke:#2ea043,stroke-width:2px,color:#1a7f37,rx:8px,ry:8px;
+    classDef startEnd fill:#24292f,stroke:#24292f,stroke-width:2px,color:#ffffff,rx:20px,ry:20px,font-weight:bold;
+
+    %% Workflow Steps
+    Start((Patient Arrival)):::startEnd --> Step1
+    
+    Step1["<b>Registration</b><br/>Administrative"]:::standard --> Step2
+    
+    Step2["<b>Initial Triage Screening</b><br/>Clinical"]:::standard --> Step3
+    
+    Step3["<b> Vitals & Paper Recording</b><br/>High Friction Bottleneck"]:::friction --> Step4
+    
+    Step4["<b> EHR Transcription</b><br/>The 'EHR Lag' & Error Risk"]:::friction --> Step5
+    
+    Step5["<b>  Validation</b><br/>Instant Anomaly Flagging"]:::aiNode --> Step6
+    
+    Step6["<b>Clinical Validation</b><br/>Human-in-the-Loop"]:::human --> End
+    
+    End((Final Disposition)):::startEnd
