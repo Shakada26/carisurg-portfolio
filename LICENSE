@@ -1,7 +1,20 @@
-MIT License
-
 Copyright (c) 2026 Shakada Blake
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction.
+This work (code, notebooks, memos, and documentation in this repository) is
+licensed under the Creative Commons Attribution-NonCommercial 4.0
+International License (CC BY-NC 4.0):
+https://creativecommons.org/licenses/by-nc/4.0/
+
+You are free to:
+  - Share — reference, cite, or build upon this work for non-commercial purposes
+  - Adapt — remix, transform, and develop your own work informed by this one
+
+Under the following terms:
+  - Attribution — you must credit Shakada Blake and link to this repository
+  - NonCommercial — you may not use this work for commercial purposes
+  - No verbatim reproduction — copying substantial passages of code, prose,
+    or analysis word-for-word (with or without attribution) is not permitted
+    under this license; this repository is for reference and inspiration,
+    not direct reuse of its content as your own submission or publication
+
+Full legal code: https://creativecommons.org/licenses/by-nc/4.0/legalcode
