@@ -19,7 +19,7 @@ reliable when biometric data is missing.
 The tool predicts a patient's **Emergency Severity Index (ESI, 1–5)** from vitals and
 chief-complaint data captured at triage. It is decision-support, not automation: it
 surfaces an acuity recommendation for a clinician to confirm or override, and runs as
-a passive background layer *after* paper-to-EHR transcription — respecting the
+a passive background layer *after* paper-to-EHR transcription, respecting the
 Caribbean ED workflow documented by De Freitas et al. (2020).
 
 ## 2. Clinical Context
