@@ -1,2 +1,8 @@
-docs/README.md
-This folder contains Week 1 memos, proposals, and supporting documentation for the CariSurg MedTech Pathways Programme.
+# Pinned to the versions used in this Codespace, so a new hire reproduces the exact environment.
+pandas==3.0.5
+numpy==2.5.1
+scikit-learn==1.9.0
+scipy==1.18.0
+joblib==1.5.3
+pyyaml==6.0.3
+pytest==9.1.1
