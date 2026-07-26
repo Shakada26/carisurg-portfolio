@@ -73,7 +73,7 @@ Full handover: `docs/HANDOVER.md`. Model comparison: `docs/model-selection.md`.
 The Week 7 decision journal recommends the **Random Forest** as the Phase 3 triage
 model, with logistic regression retained as the documented fallback. It was chosen for
 the best ESI-1 recall (0.500) and macro recall (0.553) while staying interpretable
-enough for clinical governance — the ESI-1 axis matters most, since under-triage of a
+enough for clinical governance, the ESI-1 axis matters most, since under-triage of a
 critical patient is the error to avoid. Full reasoning:
 `Week-7/Decision Journal_ Week 7 Model Choice.pdf`.
 
