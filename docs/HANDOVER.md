@@ -13,14 +13,11 @@ to confirm or override. The repo covers the full path from the raw triage export
 to a single pinned, reproducible model.
 
 ## 2 · Final model decision
-- Winner: Gradient Boosting (HistGradientBoostingClassifier), trained on the
-  engineered clinical features (max_depth=6, learning_rate=0.1, max_iter=300,
-  class_weight="balanced").
-- One-sentence reason: it delivered the best macro-F1 and the strongest recall
-  on the critical ESI-1 class while needing no feature scaling — confirm against
-  your own numbers in model-selection.md.
-- Full comparison and reasoning: model-selection.md and the Week 7 decision
-  journal in notebooks/.
+- Winner: Random Forest (RandomForestClassifier, n_estimators=300,
+  class_weight="balanced"), with logistic regression retained as the documented fallback.
+- One-sentence reason: it gave the best ESI-1 recall (0.500) and the best macro recall
+  while staying interpretable enough for clinical governance — gradient boosting scored
+  higher on accuracy but missed far more critical ESI-1 patients.
 
 ## 3 · How to run
     git clone <repo-url> && cd carisurg-portfolio
