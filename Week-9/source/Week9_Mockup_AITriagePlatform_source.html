@@ -1,0 +1,428 @@
+<!-- CariSurg AI Emergency Triage. Copyright (c) 2026 Shakada Blake. All rights reserved. Owner and Administrator: Shakada Blake. Do not remove this notice. -->
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  :root{
+    --bg:#05070B; --ink:#EAF1F8; --muted:#93A2B4; --faint:#5C6B7C;
+    --cyan:#22D3EE; --teal:#2DD4BF; --emerald:#34D399; --purple:#A78BFA;
+    --amber:#FBBF24; --rose:#FB7185; --red:#F43F5E;
+    --line:rgba(255,255,255,.08); --line2:rgba(255,255,255,.05);
+    --glass:linear-gradient(160deg,rgba(255,255,255,.055),rgba(255,255,255,.02));
+    --mono:'Liberation Mono','DejaVu Sans Mono',monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{width:3000px;height:1350px;overflow:hidden}
+  body{
+    font-family:'Liberation Sans','Helvetica Neue',Arial,sans-serif;
+    color:var(--ink); background:var(--bg); position:relative;
+    -webkit-font-smoothing:antialiased;
+  }
+  /* ambient background glows + grid */
+  .bg{position:absolute;inset:0;z-index:0;overflow:hidden}
+  .bg::before{content:"";position:absolute;inset:0;
+    background:
+      radial-gradient(1100px 700px at 8% -6%, rgba(45,212,191,.16), transparent 60%),
+      radial-gradient(1200px 800px at 102% 8%, rgba(167,139,250,.16), transparent 60%),
+      radial-gradient(1400px 900px at 60% 120%, rgba(34,211,238,.10), transparent 60%),
+      linear-gradient(180deg,#070B12,#04060A);
+  }
+  .bg::after{content:"";position:absolute;inset:0;opacity:.35;
+    background-image:linear-gradient(var(--line2) 1px,transparent 1px),linear-gradient(90deg,var(--line2) 1px,transparent 1px);
+    background-size:46px 46px; mask:radial-gradient(1600px 900px at 50% 30%,#000,transparent 80%);}
+  .wrap{position:relative;z-index:2;height:100%;padding:44px;display:flex;flex-direction:column;gap:26px}
+
+  /* ---------- top nav ---------- */
+  .nav{height:66px;flex:0 0 auto;display:flex;align-items:center;gap:26px;
+    padding:0 26px;border-radius:18px;background:var(--glass);border:1px solid var(--line);
+    backdrop-filter:blur(24px);box-shadow:0 12px 40px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.06)}
+  .logo{display:flex;align-items:center;gap:14px}
+  .mark{width:34px;height:34px;border-radius:11px;background:conic-gradient(from 210deg,var(--cyan),var(--teal),var(--emerald),var(--purple),var(--cyan));
+    box-shadow:0 0 22px rgba(45,212,191,.5); position:relative}
+  .mark::after{content:"";position:absolute;inset:7px;border-radius:6px;background:#070B12}
+  .brand{font-size:22px;font-weight:700;letter-spacing:.3px}
+  .brand small{display:block;font-size:11px;font-weight:600;letter-spacing:2px;color:var(--muted);margin-top:1px}
+  .tabs{display:flex;gap:8px;margin-left:14px}
+  .tab{font-size:15px;color:var(--muted);padding:9px 16px;border-radius:11px;font-weight:600}
+  .tab.on{color:var(--ink);background:rgba(34,211,238,.12);border:1px solid rgba(34,211,238,.28);box-shadow:0 0 18px rgba(34,211,238,.18)}
+  .grow{flex:1}
+  .search{display:flex;align-items:center;gap:10px;color:var(--faint);font-size:14px;background:rgba(255,255,255,.04);
+    border:1px solid var(--line);border-radius:12px;padding:10px 16px;min-width:360px}
+  .chip{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);background:rgba(255,255,255,.04);
+    border:1px solid var(--line);border-radius:11px;padding:9px 13px;font-weight:600}
+  .dot{width:9px;height:9px;border-radius:50%}
+  .dot.g{background:var(--emerald);box-shadow:0 0 12px var(--emerald)}
+  .dot.c{background:var(--cyan);box-shadow:0 0 12px var(--cyan)}
+  .avatar{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--purple),var(--cyan));
+    display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;color:#0b0f16}
+
+  /* ---------- main ---------- */
+  .main{flex:1;display:flex;gap:28px;min-height:0}
+  .dash{flex:0 0 67%;display:flex;flex-direction:column;gap:22px;min-height:0}
+  .side{flex:1;display:flex;flex-direction:column;gap:22px;min-height:0;position:relative}
+
+  .card{background:var(--glass);border:1px solid var(--line);border-radius:22px;backdrop-filter:blur(26px);
+    box-shadow:0 18px 50px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.06);position:relative;overflow:hidden}
+  .card.pad{padding:24px 26px}
+  .eyebrow{font-size:11px;font-weight:700;letter-spacing:2.5px;color:var(--muted);text-transform:uppercase}
+
+  /* dash header */
+  .dhead{display:flex;align-items:flex-end;justify-content:space-between}
+  .dhead h1{font-size:34px;font-weight:700;letter-spacing:-.3px}
+  .dhead .sub{font-size:15px;color:var(--muted);margin-top:6px;display:flex;align-items:center;gap:10px}
+  .live{display:flex;align-items:center;gap:9px;font-size:13px;font-weight:700;letter-spacing:1.5px;color:var(--emerald)}
+  .live .p{width:11px;height:11px;border-radius:50%;background:var(--emerald);box-shadow:0 0 0 0 rgba(52,211,153,.6);animation:none}
+  .hchips{display:flex;gap:12px;align-items:center}
+  .hchip{font-size:14px;font-weight:700;padding:9px 15px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid var(--line)}
+  .hchip b{font-family:var(--mono)}
+  .hchip.crit{color:var(--rose);background:rgba(251,113,133,.10);border-color:rgba(251,113,133,.30);box-shadow:0 0 20px rgba(251,113,133,.15)}
+
+  /* KPI strip */
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;flex:0 0 auto}
+  .kpi{padding:18px 20px}
+  .kpi .lab{display:flex;align-items:center;gap:8px}
+  .kpi .val{font-family:var(--mono);font-size:30px;font-weight:700;margin-top:10px;letter-spacing:-.5px}
+  .kpi .val small{font-size:15px;color:var(--muted)}
+  .kpi .bar{height:6px;border-radius:4px;background:rgba(255,255,255,.07);margin-top:12px;overflow:hidden}
+  .kpi .bar i{display:block;height:100%;border-radius:4px}
+  .mini{font-size:12px;color:var(--faint);margin-top:8px}
+
+  /* body split */
+  .dbody{flex:1;display:flex;gap:22px;min-height:0}
+  .queue{flex:0 0 62%;display:flex;flex-direction:column;min-height:0}
+  .qhead{display:flex;align-items:center;justify-content:space-between;padding:20px 24px 14px}
+  .qhead .t{font-size:18px;font-weight:700}
+  .sortchip{font-size:12px;font-weight:700;color:var(--cyan);background:rgba(34,211,238,.10);border:1px solid rgba(34,211,238,.28);padding:7px 12px;border-radius:10px;display:flex;gap:7px;align-items:center}
+  .qlist{flex:1;overflow:hidden;padding:0 16px 16px;display:flex;flex-direction:column;gap:12px}
+  .row{display:grid;grid-template-columns:5px 54px 1.6fr 1.15fr 74px 1.25fr;gap:16px;align-items:center;
+    padding:14px 16px;border-radius:16px;background:rgba(255,255,255,.028);border:1px solid var(--line2)}
+  .row.sel{background:linear-gradient(120deg,rgba(251,113,133,.10),rgba(255,255,255,.02));border-color:rgba(251,113,133,.28);box-shadow:0 0 26px rgba(251,113,133,.12)}
+  .ubar{width:5px;height:52px;border-radius:4px}
+  .rank{display:flex;flex-direction:column;align-items:center;gap:4px}
+  .rank .n{font-family:var(--mono);font-size:20px;font-weight:700}
+  .rank .u{font-size:9px;font-weight:800;letter-spacing:1px;padding:2px 6px;border-radius:6px}
+  .pt .nm{font-size:16px;font-weight:700}
+  .pt .meta{font-size:12.5px;color:var(--muted);margin-top:3px}
+  .pt .cc{font-size:13px;color:var(--ink);opacity:.85;margin-top:4px}
+  .risk .rl{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);letter-spacing:.5px}
+  .risk .rv{font-family:var(--mono);font-weight:700;font-size:15px}
+  .risk .rbar{height:7px;border-radius:5px;background:rgba(255,255,255,.08);margin-top:7px;overflow:hidden}
+  .risk .rbar i{display:block;height:100%;border-radius:5px}
+  .risk .trend{font-size:11px;margin-top:6px;font-weight:700}
+  .ring{width:54px;height:54px}
+  .tests{display:flex;flex-direction:column;gap:8px}
+  .pills{display:flex;flex-wrap:wrap;gap:6px}
+  .pill{font-size:11px;font-weight:600;padding:5px 9px;border-radius:8px;background:rgba(255,255,255,.05);border:1px solid var(--line);color:var(--muted)}
+  .pill.path{color:#06110d;background:linear-gradient(135deg,var(--emerald),var(--teal));border:none;font-weight:700}
+  .tl{display:flex;align-items:center;gap:6px;margin-top:2px}
+  .tl .s{width:9px;height:9px;border-radius:50%;background:rgba(255,255,255,.16)}
+  .tl .s.done{background:var(--teal);box-shadow:0 0 10px var(--teal)}
+  .tl .s.now{background:var(--cyan);box-shadow:0 0 12px var(--cyan)}
+  .tl .ln{flex:1;height:2px;background:rgba(255,255,255,.10)}
+  .tl .ln.done{background:var(--teal)}
+
+  /* insight column inside dash */
+  .insights{flex:1;display:flex;flex-direction:column;gap:18px;min-height:0}
+  .aiband{padding:20px 22px;background:linear-gradient(135deg,rgba(167,139,250,.14),rgba(34,211,238,.08));border-color:rgba(167,139,250,.28)}
+  .aiband .h{display:flex;align-items:center;gap:10px;font-size:12px;font-weight:800;letter-spacing:2px;color:var(--purple)}
+  .aiband .rec{font-size:16px;font-weight:600;margin-top:12px;line-height:1.45}
+  .aiband .rec b{color:var(--cyan)}
+  .aiband .conf{display:flex;align-items:center;gap:10px;margin-top:14px;font-size:12.5px;color:var(--muted)}
+  .cbar{flex:1;height:6px;border-radius:4px;background:rgba(255,255,255,.08);overflow:hidden}
+  .cbar i{display:block;height:100%;background:linear-gradient(90deg,var(--purple),var(--cyan));border-radius:4px}
+  .twocol{display:flex;gap:18px;flex:1;min-height:0}
+  .beds{flex:1;padding:18px 20px}
+  .beds .grid{display:grid;grid-template-columns:repeat(6,1fr);gap:9px;margin-top:14px}
+  .bed{aspect-ratio:1;border-radius:8px;background:rgba(255,255,255,.06);border:1px solid var(--line);position:relative}
+  .bed.occ{background:rgba(251,113,133,.16);border-color:rgba(251,113,133,.32)}
+  .bed.free{background:rgba(52,211,153,.16);border-color:rgba(52,211,153,.34)}
+  .bed.clean{background:rgba(251,191,36,.14);border-color:rgba(251,191,36,.30)}
+  .load{flex:1;padding:18px 20px}
+  .lrow{display:flex;align-items:center;gap:12px;margin-top:14px}
+  .lrow .k{font-size:12.5px;color:var(--muted);width:64px}
+  .lrow .lb{flex:1;height:8px;border-radius:5px;background:rgba(255,255,255,.07);overflow:hidden}
+  .lrow .lb i{display:block;height:100%;border-radius:5px}
+  .lrow .pv{font-family:var(--mono);font-size:12.5px;width:38px;text-align:right}
+
+  /* ---------- side modules ---------- */
+  .mod{padding:20px 22px;flex:1;min-height:0;display:flex;flex-direction:column;position:relative}
+  .mod .mh{display:flex;align-items:center;justify-content:space-between}
+  .mod .mt{display:flex;align-items:center;gap:11px}
+  .mod .mt .ic{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center}
+  .mod .mt h3{font-size:18px;font-weight:700}
+  .mod .tag{font-size:10px;font-weight:800;letter-spacing:1.5px;color:var(--muted);border:1px solid var(--line);padding:4px 9px;border-radius:8px}
+  .mrows{margin-top:16px;display:flex;flex-direction:column;gap:11px;flex:1}
+  .mitem{display:flex;align-items:center;gap:12px;font-size:14px;color:var(--ink)}
+  .mitem .li{width:30px;height:30px;border-radius:9px;background:rgba(255,255,255,.05);border:1px solid var(--line);flex:0 0 auto;display:flex;align-items:center;justify-content:center;color:var(--muted)}
+  .mitem .mv{margin-left:auto;font-size:12px;color:var(--muted);font-family:var(--mono)}
+  .mitem .new{margin-left:auto;font-size:10px;font-weight:800;color:#04120e;background:var(--emerald);padding:3px 8px;border-radius:7px}
+  .perm{margin-top:14px;display:flex;align-items:center;gap:10px;font-size:12.5px;color:var(--amber);
+    background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.24);padding:10px 12px;border-radius:11px}
+  .abars{display:flex;align-items:flex-end;gap:8px;height:74px;margin-top:16px}
+  .abars i{flex:1;border-radius:6px 6px 3px 3px;background:linear-gradient(180deg,var(--emerald),rgba(52,211,153,.25))}
+  .astat{display:flex;gap:22px;margin-top:14px}
+  .astat .s .v{font-family:var(--mono);font-size:22px;font-weight:700}
+  .astat .s .l{font-size:11px;color:var(--muted);margin-top:3px}
+
+  /* connectors */
+  .ports{position:absolute;left:-14px;top:0;bottom:0;width:14px;display:flex;flex-direction:column;justify-content:center}
+  .port{width:12px;height:12px;border-radius:50%;background:var(--cyan);box-shadow:0 0 16px var(--cyan);border:2px solid #06090f}
+  .link{position:absolute;left:-40px;top:50%;width:40px;height:2px;transform:translateY(-50%);
+    background:linear-gradient(90deg,transparent,var(--cyan));opacity:.7}
+  .linklbl{position:absolute;left:-38px;top:calc(50% - 20px);font-size:10px;letter-spacing:1px;color:var(--faint)}
+
+  .footer{position:absolute;left:44px;bottom:14px;font-size:12px;color:var(--faint);letter-spacing:.4px}
+  .footer b{color:var(--muted)}
+  .corner{position:absolute;right:44px;bottom:14px;font-size:12px;color:var(--faint);letter-spacing:1.5px}
+  svg{display:block}
+</style>
+</head>
+<body>
+<div class="bg"></div>
+<div class="wrap">
+
+  <!-- NAV -->
+  <div class="nav">
+    <div class="logo"><div class="mark"></div><div class="brand">CariSurg<small>AI EMERGENCY CARE PLATFORM</small></div></div>
+    <div class="tabs">
+      <div class="tab on">Triage</div><div class="tab">Patients</div><div class="tab">Network</div><div class="tab">Admin</div>
+    </div>
+    <div class="grow"></div>
+    <div class="search">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#5C6B7C" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg>
+      Search patients, beds, staff, pathways
+    </div>
+    <div class="chip"><svg width="16" height="15" viewBox="0 0 24 24" fill="none" stroke="#2DD4BF" stroke-width="2"><path d="M7 18a5 5 0 010-10 6 6 0 0111-2 4 4 0 011 8"/></svg> Synced</div>
+    <div class="chip"><span class="dot g"></span> AI online</div>
+    <div class="chip" style="font-family:var(--mono)">14:32</div>
+    <div class="avatar">PA</div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <!-- ===== TRIAGE DASHBOARD (center, 67%) ===== -->
+    <div class="dash">
+
+      <div class="dhead">
+        <div>
+          <h1>AI Emergency Triage</h1>
+          <div class="sub">Mercer General &nbsp;·&nbsp; Emergency Department <span class="live"><span class="p"></span>LIVE</span></div>
+        </div>
+        <div class="hchips">
+          <div class="hchip"><b>12</b> waiting</div>
+          <div class="hchip crit"><b>3</b> critical</div>
+          <div class="hchip"><b>18</b> min avg</div>
+        </div>
+      </div>
+
+      <!-- KPI strip -->
+      <div class="kpis">
+        <div class="card kpi">
+          <div class="lab eyebrow">Beds available</div>
+          <div class="val">6<small> / 24</small></div>
+          <div class="bar"><i style="width:25%;background:linear-gradient(90deg,var(--emerald),var(--teal))"></i></div>
+          <div class="mini">4 cleaning · 14 occupied</div>
+        </div>
+        <div class="card kpi">
+          <div class="lab eyebrow">Staff load</div>
+          <div class="val">78<small> %</small></div>
+          <div class="bar"><i style="width:78%;background:linear-gradient(90deg,var(--amber),var(--rose))"></i></div>
+          <div class="mini">6 nurses · 3 physicians on</div>
+        </div>
+        <div class="card kpi">
+          <div class="lab eyebrow">Door to clinician</div>
+          <div class="val">18<small> min</small></div>
+          <div class="bar"><i style="width:46%;background:linear-gradient(90deg,var(--cyan),var(--teal))"></i></div>
+          <div class="mini">target 20 min · trending down</div>
+        </div>
+        <div class="card kpi">
+          <div class="lab eyebrow">Triage model</div>
+          <div class="val">96<small> % acc</small></div>
+          <div class="bar"><i style="width:96%;background:linear-gradient(90deg,var(--purple),var(--cyan))"></i></div>
+          <div class="mini">v4 · calibrated hourly</div>
+        </div>
+      </div>
+
+      <!-- body: queue + insights -->
+      <div class="dbody">
+
+        <div class="card queue">
+          <div class="qhead">
+            <div class="t">Live queue</div>
+            <div class="sortchip"><span class="dot c"></span> Ordered by AI priority</div>
+          </div>
+          <div class="qlist">
+
+            <!-- row 1 critical -->
+            <div class="row sel">
+              <div class="ubar" style="background:linear-gradient(180deg,var(--red),var(--rose));box-shadow:0 0 14px var(--rose)"></div>
+              <div class="rank"><div class="n">1</div><div class="u" style="background:rgba(251,113,133,.18);color:var(--rose)">CRIT</div></div>
+              <div class="pt"><div class="nm">M. Daniels</div><div class="meta">58 · M · Bay 2</div><div class="cc">Chest pain, diaphoresis</div></div>
+              <div class="risk"><div class="rl"><span>Deterioration risk</span></div><div class="rv" style="color:var(--rose)">0.86</div><div class="rbar"><i style="width:86%;background:linear-gradient(90deg,var(--amber),var(--red))"></i></div><div class="trend" style="color:var(--rose)">▲ rising · cardiac</div></div>
+              <div>
+                <svg class="ring" viewBox="0 0 42 42"><circle cx="21" cy="21" r="17" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="5"/><circle cx="21" cy="21" r="17" fill="none" stroke="#22D3EE" stroke-width="5" stroke-linecap="round" stroke-dasharray="107" stroke-dashoffset="8" transform="rotate(-90 21 21)"/><text x="21" y="24" text-anchor="middle" font-size="11" fill="#EAF1F8" font-family="monospace" font-weight="700">92%</text></svg>
+                <div class="mini" style="text-align:center;margin-top:2px">AI conf.</div>
+              </div>
+              <div class="tests">
+                <div class="pills"><span class="pill">ECG</span><span class="pill">Troponin</span><span class="pill">CXR</span></div>
+                <span class="pill path">Cardiac fast track</span>
+                <div class="tl"><span class="s done"></span><span class="ln done"></span><span class="s done"></span><span class="ln done"></span><span class="s now"></span><span class="ln"></span><span class="s"></span></div>
+              </div>
+            </div>
+
+            <!-- row 2 high -->
+            <div class="row">
+              <div class="ubar" style="background:linear-gradient(180deg,var(--amber),#f59e0b)"></div>
+              <div class="rank"><div class="n">2</div><div class="u" style="background:rgba(251,191,36,.16);color:var(--amber)">HIGH</div></div>
+              <div class="pt"><div class="nm">A. Phillips</div><div class="meta">34 · F · Bay 5</div><div class="cc">Severe abdominal pain</div></div>
+              <div class="risk"><div class="rl"><span>Deterioration risk</span></div><div class="rv" style="color:var(--amber)">0.54</div><div class="rbar"><i style="width:54%;background:linear-gradient(90deg,var(--teal),var(--amber))"></i></div><div class="trend" style="color:var(--muted)">→ stable · surgical</div></div>
+              <div>
+                <svg class="ring" viewBox="0 0 42 42"><circle cx="21" cy="21" r="17" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="5"/><circle cx="21" cy="21" r="17" fill="none" stroke="#2DD4BF" stroke-width="5" stroke-linecap="round" stroke-dasharray="107" stroke-dashoffset="19" transform="rotate(-90 21 21)"/><text x="21" y="24" text-anchor="middle" font-size="11" fill="#EAF1F8" font-family="monospace" font-weight="700">88%</text></svg>
+                <div class="mini" style="text-align:center;margin-top:2px">AI conf.</div>
+              </div>
+              <div class="tests">
+                <div class="pills"><span class="pill">FBC</span><span class="pill">Lactate</span><span class="pill">US abdo</span></div>
+                <span class="pill path" style="background:linear-gradient(135deg,var(--teal),var(--cyan))">Surgical review</span>
+                <div class="tl"><span class="s done"></span><span class="ln done"></span><span class="s now"></span><span class="ln"></span><span class="s"></span><span class="ln"></span><span class="s"></span></div>
+              </div>
+            </div>
+
+            <!-- row 3 moderate -->
+            <div class="row">
+              <div class="ubar" style="background:linear-gradient(180deg,var(--cyan),var(--teal))"></div>
+              <div class="rank"><div class="n">3</div><div class="u" style="background:rgba(34,211,238,.14);color:var(--cyan)">MOD</div></div>
+              <div class="pt"><div class="nm">T. Baptiste</div><div class="meta">7 · M · Peds 1</div><div class="cc">Fever, rash</div></div>
+              <div class="risk"><div class="rl"><span>Deterioration risk</span></div><div class="rv" style="color:var(--cyan)">0.28</div><div class="rbar"><i style="width:28%;background:linear-gradient(90deg,var(--emerald),var(--cyan))"></i></div><div class="trend" style="color:var(--muted)">→ stable · paeds</div></div>
+              <div>
+                <svg class="ring" viewBox="0 0 42 42"><circle cx="21" cy="21" r="17" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="5"/><circle cx="21" cy="21" r="17" fill="none" stroke="#34D399" stroke-width="5" stroke-linecap="round" stroke-dasharray="107" stroke-dashoffset="14" transform="rotate(-90 21 21)"/><text x="21" y="24" text-anchor="middle" font-size="11" fill="#EAF1F8" font-family="monospace" font-weight="700">90%</text></svg>
+                <div class="mini" style="text-align:center;margin-top:2px">AI conf.</div>
+              </div>
+              <div class="tests">
+                <div class="pills"><span class="pill">Obs</span><span class="pill">Viral screen</span></div>
+                <span class="pill path" style="background:linear-gradient(135deg,var(--emerald),var(--teal))">Paediatric pathway</span>
+                <div class="tl"><span class="s done"></span><span class="ln done"></span><span class="s now"></span><span class="ln"></span><span class="s"></span><span class="ln"></span><span class="s"></span></div>
+              </div>
+            </div>
+
+            <!-- row 4 review -->
+            <div class="row">
+              <div class="ubar" style="background:linear-gradient(180deg,#8B98A5,#5C6B7C)"></div>
+              <div class="rank"><div class="n">4</div><div class="u" style="background:rgba(255,255,255,.08);color:var(--muted)">HOLD</div></div>
+              <div class="pt"><div class="nm">R. Simmons</div><div class="meta">71 · M · Waiting</div><div class="cc">Dizziness · vitals incomplete</div></div>
+              <div class="risk"><div class="rl"><span>Prediction paused</span></div><div class="rv" style="color:var(--muted)">— —</div><div class="rbar"><i style="width:12%;background:rgba(255,255,255,.18)"></i></div><div class="trend" style="color:var(--amber)">needs manual review</div></div>
+              <div>
+                <svg class="ring" viewBox="0 0 42 42"><circle cx="21" cy="21" r="17" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="5"/><circle cx="21" cy="21" r="17" fill="none" stroke="#5C6B7C" stroke-width="5" stroke-linecap="round" stroke-dasharray="107" stroke-dashoffset="80" transform="rotate(-90 21 21)"/><text x="21" y="24" text-anchor="middle" font-size="10" fill="#93A2B4" font-family="monospace" font-weight="700">n/a</text></svg>
+                <div class="mini" style="text-align:center;margin-top:2px">AI conf.</div>
+              </div>
+              <div class="tests">
+                <div class="pills"><span class="pill" style="color:var(--amber);border-color:rgba(251,191,36,.3)">Enter HR / BP</span></div>
+                <span class="pill">Nurse to complete vitals</span>
+                <div class="tl"><span class="s now"></span><span class="ln"></span><span class="s"></span><span class="ln"></span><span class="s"></span><span class="ln"></span><span class="s"></span></div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- insights -->
+        <div class="insights">
+          <div class="card aiband">
+            <div class="h"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#A78BFA" stroke-width="2"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l3 3M15 15l3 3M18 6l-3 3M9 15l-3 3"/></svg> AI COPILOT · SUGGESTED ACTION</div>
+            <div class="rec">Move <b>M. Daniels</b> to <b>Resus Bay 1</b> now. Predicted cardiac event within 40 min. Activate cardiac fast track and page on-call cardiology.</div>
+            <div class="conf">Model confidence <div class="cbar"><i style="width:92%"></i></div> 92%</div>
+          </div>
+
+          <div class="twocol">
+            <div class="card beds">
+              <div class="eyebrow">Bed availability</div>
+              <div class="grid">
+                <div class="bed occ"></div><div class="bed occ"></div><div class="bed free"></div><div class="bed occ"></div><div class="bed clean"></div><div class="bed occ"></div>
+                <div class="bed free"></div><div class="bed occ"></div><div class="bed occ"></div><div class="bed clean"></div><div class="bed free"></div><div class="bed occ"></div>
+                <div class="bed occ"></div><div class="bed free"></div><div class="bed occ"></div><div class="bed occ"></div><div class="bed clean"></div><div class="bed free"></div>
+              </div>
+              <div class="mini" style="display:flex;gap:14px;margin-top:14px">
+                <span><span class="dot" style="background:var(--emerald);display:inline-block;margin-right:6px"></span>free</span>
+                <span><span class="dot" style="background:var(--rose);display:inline-block;margin-right:6px"></span>occupied</span>
+                <span><span class="dot" style="background:var(--amber);display:inline-block;margin-right:6px"></span>cleaning</span>
+              </div>
+            </div>
+            <div class="card load">
+              <div class="eyebrow">Staff workload</div>
+              <div class="lrow"><span class="k">Triage</span><span class="lb"><i style="width:82%;background:linear-gradient(90deg,var(--amber),var(--rose))"></i></span><span class="pv">82%</span></div>
+              <div class="lrow"><span class="k">Nursing</span><span class="lb"><i style="width:74%;background:linear-gradient(90deg,var(--teal),var(--amber))"></i></span><span class="pv">74%</span></div>
+              <div class="lrow"><span class="k">Physicians</span><span class="lb"><i style="width:69%;background:linear-gradient(90deg,var(--cyan),var(--teal))"></i></span><span class="pv">69%</span></div>
+              <div class="lrow"><span class="k">Imaging</span><span class="lb"><i style="width:51%;background:linear-gradient(90deg,var(--emerald),var(--cyan))"></i></span><span class="pv">51%</span></div>
+              <div class="mini" style="margin-top:16px">AI suggests pulling 1 float nurse to triage at 15:00.</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ===== SECONDARY MODULES (right) ===== -->
+    <div class="side">
+
+      <!-- Patient Portal -->
+      <div class="card mod">
+        <div class="ports"><span class="port" style="background:var(--cyan);box-shadow:0 0 16px var(--cyan)"></span></div>
+        <div class="link"></div><div class="linklbl">encrypted</div>
+        <div class="mh">
+          <div class="mt"><div class="ic" style="background:rgba(34,211,238,.14);color:var(--cyan)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#22D3EE" stroke-width="2"><rect x="6" y="3" width="12" height="18" rx="3"/><path d="M10 6h4"/></svg></div><h3>Patient Portal</h3></div>
+          <div class="tag">MOBILE FIRST</div>
+        </div>
+        <div class="mrows">
+          <div class="mitem"><span class="li"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#93A2B4" stroke-width="2"><path d="M4 4h16v16H4z"/><path d="M8 9h8M8 13h5"/></svg></span> Lab results <span class="new">2 NEW</span></div>
+          <div class="mitem"><span class="li"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#93A2B4" stroke-width="2"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/></svg></span> Imaging reports <span class="mv">ready</span></div>
+          <div class="mitem"><span class="li"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#93A2B4" stroke-width="2"><path d="M6 3h9l3 3v15H6z"/><path d="M9 12h6M9 16h6"/></svg></span> Prescriptions &amp; discharge <span class="mv">view</span></div>
+          <div class="mitem"><span class="li"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#22D3EE" stroke-width="2"><path d="M12 16V6M8 10l4-4 4 4"/><path d="M5 19h14"/></svg></span> Upload outside records &amp; imaging <span class="mv">+</span></div>
+          <div class="mitem"><span class="li"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#93A2B4" stroke-width="2"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 9h16M9 3v4M15 3v4"/></svg></span> Book follow up <span class="mv">Tue 10:00</span></div>
+          <div class="mitem"><span class="li"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#93A2B4" stroke-width="2"><path d="M4 5h16v11H8l-4 4z"/></svg></span> Secure message provider <span class="mv">chat</span></div>
+        </div>
+      </div>
+
+      <!-- Clinician Network -->
+      <div class="card mod">
+        <div class="ports"><span class="port" style="background:var(--purple);box-shadow:0 0 16px var(--purple)"></span></div>
+        <div class="link" style="background:linear-gradient(90deg,transparent,var(--purple))"></div><div class="linklbl">permission gated</div>
+        <div class="mh">
+          <div class="mt"><div class="ic" style="background:rgba(167,139,250,.14);color:var(--purple)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A78BFA" stroke-width="2"><circle cx="8" cy="9" r="3"/><circle cx="17" cy="9" r="3"/><path d="M3 20c0-3 3-5 5-5s5 2 5 5M14 20c0-2 2-4 4-4s4 2 4 4"/></svg></div><h3>Clinician Network</h3></div>
+          <div class="tag">SECURE</div>
+        </div>
+        <div class="mrows">
+          <div class="mitem"><span class="li"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#93A2B4" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></svg></span> Dr. Osei · St. Andrew's Clinic <span class="mv">request</span></div>
+          <div class="mitem"><span class="li"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#93A2B4" stroke-width="2"><path d="M4 4h16v16H4z"/><path d="M8 9h8M8 13h8"/></svg></span> Shared records <span class="mv">2 active</span></div>
+          <div class="mitem"><span class="li"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#93A2B4" stroke-width="2"><path d="M12 3l8 4v5c0 5-4 8-8 9-4-1-8-4-8-9V7z"/></svg></span> Specialist consult · Cardiology <span class="mv">open</span></div>
+        </div>
+        <div class="perm"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FBBF24" stroke-width="2"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></svg> Records unlock only after patient authorization</div>
+      </div>
+
+      <!-- Administration Portal -->
+      <div class="card mod">
+        <div class="ports"><span class="port" style="background:var(--emerald);box-shadow:0 0 16px var(--emerald)"></span></div>
+        <div class="link" style="background:linear-gradient(90deg,transparent,var(--emerald))"></div><div class="linklbl">live sync</div>
+        <div class="mh">
+          <div class="mt"><div class="ic" style="background:rgba(52,211,153,.14);color:var(--emerald)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#34D399" stroke-width="2"><path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/></svg></div><h3>Administration</h3></div>
+          <div class="tag">EXECUTIVE</div>
+        </div>
+        <div class="astat">
+          <div class="s"><div class="v" style="color:var(--emerald)">3.2h</div><div class="l">avg length of stay</div></div>
+          <div class="s"><div class="v">214</div><div class="l">seen today</div></div>
+          <div class="s"><div class="v" style="color:var(--cyan)">96%</div><div class="l">AI accuracy</div></div>
+        </div>
+        <div class="eyebrow" style="margin-top:16px">Wait time · last 12h</div>
+        <div class="abars">
+          <i style="height:40%"></i><i style="height:55%"></i><i style="height:48%"></i><i style="height:70%"></i><i style="height:62%"></i><i style="height:80%"></i><i style="height:58%"></i><i style="height:44%"></i><i style="height:52%"></i><i style="height:38%"></i><i style="height:30%"></i><i style="height:35%"></i>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="footer">One connected platform · <b>CariSurg AI Emergency Care</b> · deployed at Mercer General Emergency Department</div>
+  <div class="corner">CONCEPT · WEEK 9</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,400 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CariSurg AI Emergency Care — Prototype</title>
+<!-- ============================================================
+     CariSurg AI Emergency Triage — Interactive Prototype
+     Copyright (c) 2026 Shakada Blake. All rights reserved.
+     Owner and Administrator: Shakada Blake.
+     Unauthorised copying, reuse, or removal of this notice or the
+     embedded author watermark is prohibited. See LICENSE.md.
+============================================================ -->
+<style>
+:root{
+  --bg:#05070B;--ink:#EAF1F8;--muted:#93A2B4;--faint:#5C6B7C;
+  --cyan:#22D3EE;--teal:#2DD4BF;--emerald:#34D399;--purple:#A78BFA;--amber:#FBBF24;--rose:#FB7185;--red:#F43F5E;
+  --line:rgba(255,255,255,.08);--line2:rgba(255,255,255,.05);
+  --glass:linear-gradient(160deg,rgba(255,255,255,.055),rgba(255,255,255,.02));
+  --mono:'Liberation Mono','DejaVu Sans Mono',ui-monospace,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Liberation Sans','Helvetica Neue',Arial,sans-serif;color:var(--ink);background:var(--bg);min-height:100vh;position:relative;-webkit-font-smoothing:antialiased}
+.bg{position:fixed;inset:0;z-index:0}
+.bg::before{content:"";position:absolute;inset:0;background:
+  radial-gradient(1000px 700px at 6% -6%,rgba(45,212,191,.15),transparent 60%),
+  radial-gradient(1100px 800px at 104% 6%,rgba(167,139,250,.15),transparent 60%),
+  radial-gradient(1300px 900px at 55% 118%,rgba(34,211,238,.08),transparent 60%),
+  linear-gradient(180deg,#070B12,#04060A)}
+.app{position:relative;z-index:2;max-width:1360px;margin:0 auto;padding:20px}
+.eyebrow{font-size:11px;font-weight:700;letter-spacing:2px;color:var(--muted);text-transform:uppercase}
+.mono{font-family:var(--mono)}
+.card{background:var(--glass);border:1px solid var(--line);border-radius:20px;backdrop-filter:blur(22px);box-shadow:0 16px 44px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.06)}
+
+/* nav */
+.nav{display:flex;align-items:center;gap:18px;padding:12px 18px;border-radius:16px;margin-bottom:18px}
+.logo{display:flex;align-items:center;gap:12px}
+.mark{width:32px;height:32px;border-radius:10px;background:conic-gradient(from 210deg,var(--cyan),var(--teal),var(--emerald),var(--purple),var(--cyan));box-shadow:0 0 20px rgba(45,212,191,.5);position:relative}
+.mark::after{content:"";position:absolute;inset:7px;border-radius:5px;background:#070B12}
+.brand{font-size:19px;font-weight:700}.brand small{display:block;font-size:10px;letter-spacing:2px;color:var(--muted)}
+.tabs{display:flex;gap:6px;margin-left:8px;flex-wrap:wrap}
+.tab{font-size:14px;color:var(--muted);padding:9px 15px;border-radius:11px;font-weight:600;cursor:pointer;border:1px solid transparent;user-select:none}
+.tab:hover{color:var(--ink);background:rgba(255,255,255,.04)}
+.tab.on{color:var(--ink);background:rgba(34,211,238,.12);border-color:rgba(34,211,238,.28);box-shadow:0 0 16px rgba(34,211,238,.15)}
+.grow{flex:1}
+.chip{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--muted);background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:10px;padding:8px 11px;font-weight:600}
+.dot{width:8px;height:8px;border-radius:50%}.dot.g{background:var(--emerald);box-shadow:0 0 10px var(--emerald)}
+
+.screen{display:none;animation:fade .25s ease}
+.screen.on{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.pagehead{margin:4px 4px 16px}
+.pagehead h2{font-size:24px;font-weight:700}
+.pagehead p{font-size:14px;color:var(--muted);margin-top:4px}
+
+/* home tiles */
+.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.tile{padding:20px;cursor:pointer;min-height:130px;display:flex;flex-direction:column;justify-content:space-between;border-radius:18px}
+.tile:hover{transform:translateY(-2px);box-shadow:0 22px 50px rgba(0,0,0,.55)}
+.tile .ic{width:40px;height:40px;border-radius:11px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.05);border:1px solid var(--line)}
+.tile.on2{background:linear-gradient(135deg,rgba(34,211,238,.16),rgba(45,212,191,.06));border-color:rgba(34,211,238,.35)}
+.tile h3{font-size:18px;font-weight:700;margin-top:14px}.tile .d{font-size:12.5px;color:var(--muted);margin-top:3px}
+.tile .bd{align-self:flex-start;margin-top:10px;font-size:11px;font-weight:800;padding:3px 8px;border-radius:7px}
+
+/* triage layout */
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:16px}
+.kpi{padding:14px 16px}.kpi .val{font-family:var(--mono);font-size:24px;font-weight:700;margin-top:8px}.kpi .val small{font-size:13px;color:var(--muted)}
+.kpi .bar{height:6px;border-radius:4px;background:rgba(255,255,255,.07);margin-top:10px;overflow:hidden}.kpi .bar i{display:block;height:100%;border-radius:4px}
+.triwrap{display:grid;grid-template-columns:1.25fr 1fr;gap:18px;align-items:start}
+@media(max-width:900px){.triwrap{grid-template-columns:1fr}.tiles{grid-template-columns:1fr}.kpis{grid-template-columns:repeat(2,1fr)}}
+.qhead{display:flex;align-items:center;justify-content:space-between;padding:16px 18px 8px}
+.qhead .t{font-size:17px;font-weight:700}
+.sortchip{font-size:12px;font-weight:700;color:var(--cyan);background:rgba(34,211,238,.10);border:1px solid rgba(34,211,238,.28);padding:6px 11px;border-radius:9px}
+.qlist{padding:8px 12px 14px;display:flex;flex-direction:column;gap:10px}
+.qrow{display:grid;grid-template-columns:5px 46px 1fr auto;gap:13px;align-items:center;padding:12px 14px;border-radius:14px;background:rgba(255,255,255,.028);border:1px solid var(--line2);cursor:pointer}
+.qrow:hover{background:rgba(255,255,255,.05)}
+.qrow.sel{border-color:rgba(34,211,238,.4);box-shadow:0 0 20px rgba(34,211,238,.14);background:rgba(34,211,238,.05)}
+.qrow.done{opacity:.55}
+.ubar{width:5px;height:46px;border-radius:4px}
+.rank{text-align:center}.rank .n{font-family:var(--mono);font-size:18px;font-weight:700}.rank .u{font-size:9px;font-weight:800;letter-spacing:.5px;padding:2px 5px;border-radius:6px;margin-top:3px;display:inline-block}
+.nm{font-size:15px;font-weight:700}.meta{font-size:12px;color:var(--muted);margin-top:2px}.cc{font-size:12.5px;opacity:.85;margin-top:2px}
+.qstate{font-size:11px;font-weight:800;letter-spacing:.5px;padding:5px 9px;border-radius:8px;text-align:center;white-space:nowrap}
+
+/* detail */
+.detail{padding:20px 22px;min-height:200px}
+.dh h2{font-size:22px;font-weight:700}
+.dh .sub{font-size:13px;color:var(--muted);margin-top:3px}
+.dh .cc2{font-size:14px;margin-top:8px}
+.vitrow{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+.vit{background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:12px;padding:10px 14px;min-width:78px}
+.vit .k{font-size:10px;letter-spacing:1px;color:var(--muted)}
+.vit .v{font-family:var(--mono);font-size:19px;font-weight:700;margin-top:4px}
+.blk{margin-top:22px}
+.blk .lbl{font-size:12px;font-weight:800;letter-spacing:1.5px;color:var(--muted)}
+.scorebtns{display:flex;gap:9px;margin-top:12px;flex-wrap:wrap}
+.sb{width:52px;height:44px;border-radius:11px;background:rgba(255,255,255,.05);border:1px solid var(--line);color:var(--ink);font-family:var(--mono);font-size:18px;font-weight:700;cursor:pointer}
+.sb:hover{background:rgba(255,255,255,.1)}
+.sb.on{background:var(--cyan);color:#04121a;border-color:var(--cyan);box-shadow:0 0 18px rgba(34,211,238,.4)}
+.locked{margin-top:12px;font-size:13px;color:var(--faint);font-style:italic;display:flex;align-items:center;gap:9px}
+.aireveal{margin-top:14px;padding:16px 18px;border-radius:14px;background:linear-gradient(135deg,rgba(167,139,250,.14),rgba(34,211,238,.07));border:1px solid rgba(167,139,250,.28)}
+.aireveal .top{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.aireveal .sug{font-size:16px;font-weight:800}
+.ring{flex:0 0 auto}
+.drv{margin-top:12px;display:flex;flex-direction:column;gap:7px}
+.drv .d1{display:flex;gap:9px;align-items:flex-start;font-size:13px}
+.drv .d1 i{width:7px;height:7px;border-radius:2px;background:var(--cyan);margin-top:5px;flex:0 0 auto}
+.pills{display:flex;flex-wrap:wrap;gap:7px;margin-top:12px}
+.pill{font-size:12px;font-weight:600;padding:5px 10px;border-radius:8px;background:rgba(255,255,255,.05);border:1px solid var(--line);color:var(--muted)}
+.path{color:#06110d;background:linear-gradient(135deg,var(--emerald),var(--teal));border:none;font-weight:700}
+.variance{margin-top:12px;font-size:12.5px;font-weight:700}
+.actions{display:flex;gap:12px;margin-top:18px;flex-wrap:wrap}
+.btn{border:none;cursor:pointer;font-weight:700;font-size:14px;padding:12px 20px;border-radius:12px}
+.btn.primary{background:var(--cyan);color:#04121a}
+.btn.primary:hover{box-shadow:0 0 22px rgba(34,211,238,.4)}
+.btn.ghost{background:rgba(255,255,255,.05);border:1px solid var(--line);color:var(--ink)}
+.btn.ghost:hover{background:rgba(255,255,255,.1)}
+.btn.warn{background:rgba(251,191,36,.16);border:1px solid rgba(251,191,36,.35);color:var(--amber)}
+.reasonbox{margin-top:14px;display:none}
+.reasonbox.show{display:block}
+.reasonbox textarea{width:100%;background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:12px;color:var(--ink);padding:12px;font-family:inherit;font-size:13.5px;resize:vertical;min-height:64px}
+.done-banner{margin-top:16px;padding:14px 16px;border-radius:12px;font-size:14px;font-weight:600;display:flex;align-items:center;gap:10px}
+.done-banner.ok{background:rgba(52,211,153,.12);border:1px solid rgba(52,211,153,.3);color:var(--emerald)}
+.done-banner.ov{background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.3);color:var(--amber)}
+.reset{margin-top:14px;font-size:12.5px;color:var(--cyan);cursor:pointer;display:inline-block;font-weight:600}
+.reset:hover{text-decoration:underline}
+.empty{color:var(--faint);font-size:14px;padding:40px 6px;text-align:center}
+
+/* audit log */
+.log{padding:16px 18px;margin-top:18px}
+.log .lh{font-size:12px;font-weight:800;letter-spacing:1.5px;color:var(--muted)}
+.logitem{font-size:12.5px;color:var(--muted);padding:8px 0;border-bottom:1px solid var(--line2);display:flex;gap:10px}
+.logitem:last-child{border-bottom:none}.logitem .tm{font-family:var(--mono);color:var(--faint);flex:0 0 auto}
+.logempty{font-size:12.5px;color:var(--faint);font-style:italic;margin-top:8px}
+
+/* generic list screens */
+.mrow{display:flex;align-items:center;gap:13px;padding:15px 6px;border-bottom:1px solid var(--line2);font-size:15px;cursor:pointer}
+.mrow:last-child{border-bottom:none}.mrow:hover{background:rgba(255,255,255,.03);border-radius:10px}
+.mrow .li{width:34px;height:34px;border-radius:10px;background:rgba(255,255,255,.05);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+.mrow .mv{margin-left:auto;font-size:12px;color:var(--muted);font-family:var(--mono)}
+.mrow .new{margin-left:auto;font-size:10px;font-weight:800;color:#04120e;background:var(--emerald);padding:3px 8px;border-radius:7px}
+.perm{margin-top:16px;display:flex;align-items:center;gap:12px;font-size:13px;color:var(--amber);background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.24);padding:12px 14px;border-radius:12px}
+.perm.ok{color:var(--emerald);background:rgba(52,211,153,.1);border-color:rgba(52,211,153,.3)}
+.astat{display:flex;gap:34px}.astat .v{font-family:var(--mono);font-size:28px;font-weight:700}.astat .l{font-size:12px;color:var(--muted);margin-top:3px}
+.abars{display:flex;align-items:flex-end;gap:10px;height:150px;margin-top:20px}
+.abars i{flex:1;border-radius:6px 6px 3px 3px;background:linear-gradient(180deg,var(--emerald),rgba(52,211,153,.22))}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);z-index:50;background:#0c1219;border:1px solid var(--line);border-radius:12px;padding:13px 20px;font-size:14px;color:var(--ink);box-shadow:0 12px 40px rgba(0,0,0,.6);opacity:0;transition:.25s}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.hint{font-size:12.5px;color:var(--faint);margin-top:6px}
+.wm{position:fixed;inset:0;z-index:1;pointer-events:none;overflow:hidden;opacity:.05;transform:rotate(-24deg) scale(1.5);transform-origin:center}
+.wm span{position:absolute;color:#9fb0c0;font-size:20px;font-weight:800;letter-spacing:3px;white-space:nowrap}
+.ownerbar{position:relative;z-index:2;max-width:1360px;margin:16px auto 6px;padding:12px 18px;border-radius:14px;font-size:12.5px;color:var(--faint);display:flex;flex-wrap:wrap;gap:8px 22px;align-items:center;border:1px solid var(--line);background:rgba(255,255,255,.02)}
+.ownerbar b{color:var(--muted)}
+</style></head>
+<body>
+<div class="bg"></div>
+<div class="app">
+
+  <div class="nav card">
+    <div class="logo"><div class="mark"></div><div class="brand">CariSurg<small>AI EMERGENCY CARE</small></div></div>
+    <div class="tabs" id="tabs">
+      <div class="tab" data-screen="home">Home</div>
+      <div class="tab on" data-screen="triage">Triage</div>
+      <div class="tab" data-screen="patients">Patients</div>
+      <div class="tab" data-screen="network">Network</div>
+      <div class="tab" data-screen="admin">Admin</div>
+    </div>
+    <div class="grow"></div>
+    <div class="chip"><span class="dot g"></span> AI online</div>
+    <div class="chip mono">14:32</div>
+    <div class="chip" style="border-color:rgba(167,139,250,.35);color:var(--purple)">Admin · Shakada Blake</div>
+  </div>
+
+  <!-- HOME -->
+  <div class="screen" id="s-home">
+    <div class="pagehead"><h2>Good afternoon, Nurse Alleyne</h2><p>Mercer General ED · one connected platform. Choose a module to begin.</p></div>
+    <div class="tiles" id="hometiles"></div>
+  </div>
+
+  <!-- TRIAGE -->
+  <div class="screen on" id="s-triage">
+    <div class="pagehead"><h2>AI Emergency Triage</h2><p>Queue ordered by the model (logistic regression and decision tree baselines, tuned gradient boosting), predicting ESI 1 to 5 from triage vitals and chief complaint flags. Demographics and post triage outcomes are excluded. Select a patient to run the triage flow.</p></div>
+    <div class="kpis">
+      <div class="card kpi"><div class="eyebrow">Beds available</div><div class="val">6<small> / 24</small></div><div class="bar"><i style="width:25%;background:linear-gradient(90deg,var(--emerald),var(--teal))"></i></div></div>
+      <div class="card kpi"><div class="eyebrow">Staff load</div><div class="val">78<small> %</small></div><div class="bar"><i style="width:78%;background:linear-gradient(90deg,var(--amber),var(--rose))"></i></div></div>
+      <div class="card kpi"><div class="eyebrow">Door to clinician</div><div class="val">18<small> min</small></div><div class="bar"><i style="width:46%;background:linear-gradient(90deg,var(--cyan),var(--teal))"></i></div></div>
+      <div class="card kpi"><div class="eyebrow">Recall, ESI 1</div><div class="val">0.31</div><div class="bar"><i style="width:31%;background:linear-gradient(90deg,var(--purple),var(--cyan))"></i></div></div>
+    </div>
+    <div class="triwrap">
+      <div>
+        <div class="card">
+          <div class="qhead"><div class="t">Live queue</div><div class="sortchip">Ordered by AI priority</div></div>
+          <div class="qlist" id="qlist"></div>
+        </div>
+        <div class="card log" id="logcard">
+          <div class="lh">AUDIT LOG</div>
+          <div id="loglist"><div class="logempty">Every confirm or override is recorded here.</div></div>
+        </div>
+      </div>
+      <div class="card detail" id="detail"><div class="empty">Select a patient from the queue to begin.</div></div>
+    </div>
+  </div>
+
+  <!-- PATIENTS -->
+  <div class="screen" id="s-patients">
+    <div class="pagehead"><h2>Patient Portal</h2><p>What the patient sees on their phone. Tap an item to preview.</p></div>
+    <div class="card" style="padding:14px 20px;max-width:560px">
+      <div class="mrow" data-toast="Opening lab results…"><span class="li">🧪</span> Lab results <span class="new">2 NEW</span></div>
+      <div class="mrow" data-toast="Opening imaging report…"><span class="li">🩻</span> Imaging reports <span class="mv">ready</span></div>
+      <div class="mrow" data-toast="Opening prescriptions…"><span class="li">💊</span> Prescriptions &amp; discharge <span class="mv">view</span></div>
+      <div class="mrow" data-toast="Upload started…"><span class="li">⤴️</span> Upload outside records &amp; imaging <span class="mv">+</span></div>
+      <div class="mrow" data-toast="Booking follow up…"><span class="li">📅</span> Book follow up <span class="mv">Tue 10:00</span></div>
+      <div class="mrow" data-toast="Opening secure chat…"><span class="li">💬</span> Secure message provider <span class="mv">chat</span></div>
+    </div>
+  </div>
+
+  <!-- NETWORK -->
+  <div class="screen" id="s-network">
+    <div class="pagehead"><h2>Clinician Network</h2><p>Affiliated clinicians can request records. Access is permission based.</p></div>
+    <div class="card" style="padding:16px 22px;max-width:620px">
+      <div class="mrow"><span class="li">👤</span> Dr. Osei · St. Andrew's Clinic <span class="mv" id="netreq">requesting</span></div>
+      <div class="mrow"><span class="li">🗂️</span> Shared records <span class="mv" id="netshared">locked</span></div>
+      <div class="mrow"><span class="li">🩺</span> Specialist consult · Cardiology <span class="mv">open</span></div>
+      <div class="perm" id="permbox">
+        <span>🔒</span>
+        <span id="permtxt">Records are locked. They unlock only after the patient authorizes access.</span>
+        <button class="btn warn" id="authbtn" style="margin-left:auto;padding:8px 14px;font-size:13px">Authorize as patient</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ADMIN -->
+  <div class="screen" id="s-admin">
+    <div class="pagehead"><h2>Administration</h2><p>Executive view of department performance and AI metrics.</p></div>
+    <div class="card" style="padding:22px;max-width:720px">
+      <div class="astat"><div><div class="v" style="color:var(--emerald)">3.2h</div><div class="l">avg length of stay</div></div><div><div class="v">214</div><div class="l">seen today</div></div><div><div class="v" style="color:var(--cyan)">96%</div><div class="l">AI accuracy</div></div></div>
+      <div class="eyebrow" style="margin-top:22px">Wait time · last 12 hours</div>
+      <div class="abars"><i style="height:40%"></i><i style="height:55%"></i><i style="height:48%"></i><i style="height:72%"></i><i style="height:62%"></i><i style="height:84%"></i><i style="height:58%"></i><i style="height:44%"></i><i style="height:52%"></i><i style="height:38%"></i><i style="height:30%"></i><i style="height:35%"></i></div>
+    </div>
+  </div>
+
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const AC={CRIT:'var(--rose)',HIGH:'var(--amber)',MOD:'var(--cyan)',HOLD:'var(--muted)'};
+const patients=[
+ {id:'p1',rank:1,name:'M. Daniels',age:58,sex:'M',loc:'Bay 2',cc:'Chest pain, diaphoresis',urg:'CRIT',esi:2,risk:0.86,conf:92,complete:true,
+  vitals:{HR:'128',BP:'148/95',SpO2:'91%',RR:'24',Temp:'37.1'},
+  drivers:['Heart rate 128, above the expected range for age','SpO2 91%, below the 94% threshold','Respiratory rate 24, elevated and consistent with distress'],
+  tests:['ECG','Troponin','CXR'],pathway:'Cardiac fast track'},
+ {id:'p2',rank:2,name:'A. Phillips',age:34,sex:'F',loc:'Bay 5',cc:'Severe abdominal pain',urg:'HIGH',esi:3,risk:0.54,conf:88,complete:true,
+  vitals:{HR:'104',BP:'118/76',SpO2:'98%',RR:'18',Temp:'37.4'},
+  drivers:['Lactate mildly raised','Guarding noted on examination','Pain score 8 of 10'],
+  tests:['FBC','Lactate','US abdomen'],pathway:'Surgical review'},
+ {id:'p3',rank:3,name:'T. Baptiste',age:7,sex:'M',loc:'Peds 1',cc:'Fever, rash',urg:'MOD',esi:4,risk:0.28,conf:90,complete:true,
+  vitals:{HR:'120',BP:'100/64',SpO2:'99%',RR:'22',Temp:'38.9'},
+  drivers:['Temperature 38.9','Rash blanching, non concerning','Alert and active'],
+  tests:['Observations','Viral screen'],pathway:'Paediatric pathway'},
+ {id:'p4',rank:4,name:'R. Simmons',age:71,sex:'M',loc:'Waiting',cc:'Dizziness',urg:'HOLD',esi:null,risk:null,conf:null,complete:false,
+  vitals:{HR:'—',BP:'—',SpO2:'96%',RR:'18',Temp:'36.8'},
+  drivers:['Heart rate 96, within range','Blood pressure 138/84, mildly raised','No acute red flags'],
+  tests:['Complete vitals','ECG'],pathway:'Standard assessment'}
+];
+const state={selected:null,scores:{},decisions:{},reasons:{},log:[]};
+
+const tiles=[
+ {s:'triage',ic:'🚑',h:'Triage',d:'Live AI queue',bd:'3 crit',bc:'rose',on:true},
+ {s:'patients',ic:'📱',h:'Patients',d:'Portal & records'},
+ {s:'network',ic:'🔗',h:'Network',d:'Shared records'},
+ {s:'admin',ic:'📊',h:'Admin',d:'Analytics'},
+ {s:'triage',ic:'🧠',h:'AI Copilot',d:'1 new action'},
+ {s:'admin',ic:'📄',h:'Reports',d:'Shift handover'}
+];
+function renderHome(){
+ document.getElementById('hometiles').innerHTML=tiles.map(t=>`
+  <div class="card tile ${t.on?'on2':''}" data-screen="${t.s}">
+   <div class="ic">${t.ic}</div>
+   <div><h3>${t.h}</h3><div class="d">${t.d}</div></div>
+   ${t.bd?`<span class="bd" style="background:rgba(251,113,133,.18);color:var(--rose)">${t.bd}</span>`:''}
+  </div>`).join('');
+ document.querySelectorAll('#hometiles .tile').forEach(el=>el.onclick=()=>show(el.dataset.screen));
+}
+
+function ring(pct,color){
+ const off=107-(107*pct/100);
+ return `<svg class="ring" width="54" height="54" viewBox="0 0 42 42"><circle cx="21" cy="21" r="17" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="5"/><circle cx="21" cy="21" r="17" fill="none" stroke="${color}" stroke-width="5" stroke-linecap="round" stroke-dasharray="107" stroke-dashoffset="${off}" transform="rotate(-90 21 21)"/><text x="21" y="24" text-anchor="middle" font-size="11" fill="#EAF1F8" font-family="monospace" font-weight="700">${pct}%</text></svg>`;
+}
+
+function renderQueue(){
+ const grad={CRIT:'linear-gradient(180deg,var(--red),var(--rose))',HIGH:'linear-gradient(180deg,var(--amber),#f59e0b)',MOD:'linear-gradient(180deg,var(--cyan),var(--teal))',HOLD:'linear-gradient(180deg,#8B98A5,#5C6B7C)'};
+ document.getElementById('qlist').innerHTML=patients.map(p=>{
+  const dec=state.decisions[p.id];
+  let stateHtml;
+  if(dec==='confirmed')stateHtml=`<div class="qstate" style="background:rgba(52,211,153,.14);color:var(--emerald)">ROUTED</div>`;
+  else if(dec==='overridden')stateHtml=`<div class="qstate" style="background:rgba(251,191,36,.14);color:var(--amber)">OVERRIDDEN</div>`;
+  else stateHtml=`<div class="qstate" style="background:rgba(255,255,255,.06);color:var(--muted)">WAITING</div>`;
+  return `<div class="qrow ${state.selected===p.id?'sel':''} ${dec?'done':''}" data-id="${p.id}">
+    <div class="ubar" style="background:${grad[p.urg]}"></div>
+    <div class="rank"><div class="n">${p.rank}</div><div class="u" style="background:rgba(255,255,255,.08);color:${AC[p.urg]}">${p.urg}</div></div>
+    <div><div class="nm">${p.name}</div><div class="meta">${p.age} · ${p.sex} · ${p.loc}</div><div class="cc">${p.cc}</div></div>
+    ${stateHtml}
+   </div>`;
+ }).join('');
+ document.querySelectorAll('#qlist .qrow').forEach(el=>el.onclick=()=>{state.selected=el.dataset.id;renderQueue();renderDetail();});
+}
+
+function renderDetail(){
+ const el=document.getElementById('detail');
+ const p=patients.find(x=>x.id===state.selected);
+ if(!p){el.innerHTML='<div class="empty">Select a patient from the queue to begin.</div>';return;}
+ const score=state.scores[p.id];
+ const dec=state.decisions[p.id];
+ let html=`<div class="dh"><h2>${p.name}</h2><div class="sub">${p.age} · ${p.sex} · ${p.loc}</div><div class="cc2">${p.cc}</div></div>`;
+ // vitals
+ html+=`<div class="vitrow">`+Object.entries(p.vitals).map(([k,v])=>`<div class="vit"><div class="k">${k}</div><div class="v" ${(v==='—')?'style="color:var(--amber)"':''}>${v}</div></div>`).join('')+`</div>`;
+
+ if(!p.complete){
+  html+=`<div class="blk"><div class="lbl">SAFETY HOLD</div>
+   <div class="locked"><span>⚠️</span> Critical fields are missing, so the AI prediction is paused. No score is guessed.</div>
+   <button class="btn ghost" id="entervitals" style="margin-top:12px">Enter missing vitals (HR, BP)</button></div>`;
+  el.innerHTML=html;
+  document.getElementById('entervitals').onclick=()=>{p.complete=true;p.vitals.HR='96';p.vitals.BP='138/84';p.esi=3;p.risk=0.31;p.conf=85;p.urg='MOD';toast('Vitals entered. Prediction unlocked.');renderQueue();renderDetail();};
+  return;
+ }
+
+ // Friction protocol
+ html+=`<div class="blk"><div class="lbl">STEP 1 · YOUR TRIAGE SCORE</div>
+   <div class="hint">Enter your own score first. The AI stays hidden until you commit.</div>
+   <div class="scorebtns">`+[1,2,3,4,5].map(n=>`<button class="sb ${score===n?'on':''}" data-score="${n}">${n}</button>`).join('')+`</div></div>`;
+
+ if(!score){
+  html+=`<div class="blk"><div class="locked"><span>🔒</span> AI recommendation hidden. Select your score to reveal it.</div></div>`;
+ }else{
+  const match=score===p.esi;
+  html+=`<div class="blk"><div class="lbl">STEP 2 · GUARDRAIL RECOMMENDATION</div>
+    <div class="aireveal">
+     <div class="top"><div><div class="sug" style="color:${AC[p.urg]}">Suggests ESI ${p.esi}</div>
+       <div style="font-size:12.5px;color:var(--muted);margin-top:3px">Deterioration risk <b class="mono" style="color:${AC[p.urg]}">${p.risk.toFixed(2)}</b></div></div>
+       ${ring(p.conf,'var(--cyan)')}</div>
+     <div class="drv">`+p.drivers.map(d=>`<div class="d1"><i></i>${d}</div>`).join('')+`</div>
+     <div class="pills"><span class="pill">Suggested</span>`+p.tests.map(t=>`<span class="pill">${t}</span>`).join('')+`<span class="pill path">${p.pathway}</span></div>
+     <div class="variance" style="color:${match?'var(--emerald)':'var(--amber)'}">${match?'✓ Matches your score of '+score+' (variance 0)':'⚠ Differs from your score of '+score+' · review before deciding'}</div>
+     <div style="font-size:11.5px;color:var(--faint);margin-top:10px">Drivers ranked from the model's features (triage vitals and chief complaint flags). Recall for ESI 1 is the priority metric.</div>
+    </div></div>`;
+
+  if(!dec){
+   html+=`<div class="actions">
+     <button class="btn primary" id="confirm">Confirm ESI ${p.esi} & route</button>
+     <button class="btn ghost" id="override">Override</button>
+    </div>
+    <div class="reasonbox" id="reasonbox">
+     <div class="lbl" style="margin-bottom:8px">OVERRIDE REASON</div>
+     <textarea id="reason" placeholder="Why are you overriding the AI? (logged for audit)"></textarea>
+     <div class="actions"><button class="btn warn" id="submitoverride">Submit override</button></div>
+    </div>`;
+  }else if(dec==='confirmed'){
+   html+=`<div class="done-banner ok"><span>✓</span> Confirmed ESI ${p.esi}. Patient routed on ${p.pathway}. Logged to the record.</div><span class="reset" data-reset="${p.id}">Reset this patient</span>`;
+  }else{
+   html+=`<div class="done-banner ov"><span>⚑</span> Overridden by nurse. Reason: "${state.reasons[p.id]||''}". Logged to the record.</div><span class="reset" data-reset="${p.id}">Reset this patient</span>`;
+  }
+ }
+ el.innerHTML=html;
+
+ el.querySelectorAll('.sb').forEach(b=>b.onclick=()=>{state.scores[p.id]=+b.dataset.score;renderDetail();});
+ const cf=document.getElementById('confirm');if(cf)cf.onclick=()=>{state.decisions[p.id]='confirmed';addLog(p.name,'confirmed ESI '+p.esi);renderQueue();renderDetail();toast('Confirmed and routed.');};
+ const ov=document.getElementById('override');if(ov)ov.onclick=()=>{document.getElementById('reasonbox').classList.add('show');ov.style.display='none';};
+ const so=document.getElementById('submitoverride');if(so)so.onclick=()=>{const r=(document.getElementById('reason').value||'no reason given').trim();state.decisions[p.id]='overridden';state.reasons[p.id]=r;addLog(p.name,'overridden ('+r+')');renderQueue();renderDetail();toast('Override logged.');};
+ el.querySelectorAll('.reset').forEach(x=>x.onclick=()=>{delete state.decisions[p.id];delete state.scores[p.id];delete state.reasons[p.id];renderQueue();renderDetail();});
+}
+
+function addLog(name,action){
+ const t=new Date();const tm=String(t.getHours()).padStart(2,'0')+':'+String(t.getMinutes()).padStart(2,'0');
+ state.log.unshift({tm,txt:name+' — '+action});
+ const ll=document.getElementById('loglist');
+ ll.innerHTML=state.log.map(e=>`<div class="logitem"><span class="tm">${e.tm}</span><span>${e.txt}</span></div>`).join('');
+}
+
+let toastTimer;
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),1900);}
+
+function show(name){
+ document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));
+ document.getElementById('s-'+name).classList.add('on');
+ document.querySelectorAll('#tabs .tab').forEach(t=>t.classList.toggle('on',t.dataset.screen===name));
+}
+document.querySelectorAll('#tabs .tab').forEach(t=>t.onclick=()=>show(t.dataset.screen));
+document.querySelectorAll('.mrow[data-toast]').forEach(r=>r.onclick=()=>toast(r.dataset.toast));
+document.getElementById('authbtn').onclick=function(){
+ document.getElementById('netreq').textContent='authorized';
+ document.getElementById('netshared').textContent='2 active';
+ const pb=document.getElementById('permbox');pb.classList.add('ok');
+ pb.querySelector('span').textContent='✓';
+ document.getElementById('permtxt').textContent='Patient has authorized access. Records are now shared with Dr. Osei.';
+ this.style.display='none';toast('Access authorized by patient.');
+};
+
+renderHome();renderQueue();renderDetail();
+
+/* Author: Shakada Blake — owner & administrator. Copyright (c) 2026. All rights reserved. */
+(function(){var w=document.createElement('div');w.className='wm';var h='';for(var y=-120;y<2200;y+=110){for(var x=-140;x<2700;x+=280){h+='<span style="left:'+x+'px;top:'+y+'px">Shakada Blake</span>';}}w.innerHTML=h;document.body.appendChild(w);})();
+(function(){var f=document.createElement('div');f.className='ownerbar';f.innerHTML='<span>© 2026 <b>Shakada Blake</b> · Owner &amp; Administrator · All rights reserved (see LICENSE)</span><span>Aligns with the Grenada Data Protection Act 2023 and WHO AI ethics. Not certified — a DPIA is required before real patient data.</span><span>Prototype · synthetic patients only</span>';document.querySelector('.app').appendChild(f);})();
+</script>
+</body></html>
