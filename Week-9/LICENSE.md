@@ -1,4 +1,4 @@
-# Proprietary License — All Rights Reserved
+# Proprietary License - All Rights Reserved
 
 **CariSurg AI Emergency Triage Platform**
 **Copyright © 2026 Shakada Blake. All rights reserved.**
@@ -6,9 +6,9 @@
 **Owner and Administrator:** Shakada Blake
 
 ## 1. Ownership
-All materials in this repository — including the source code, the interactive
+All materials in this repository - including the source code, the interactive
 prototype, the co-design canvas, the integration notes, the mock-up images, the
-model card, and all associated designs and text (the "Work") — are the exclusive
+model card, and all associated designs and text (the "Work") are the exclusive
 property of Shakada Blake, the sole owner and administrator.
 
 ## 2. Grant (none by default)
