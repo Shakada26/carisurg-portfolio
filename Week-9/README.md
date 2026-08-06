@@ -1,4 +1,4 @@
-# Week 9 — HCI, Co-Design and Prototyping
+# Week 9 - HCI, Co-Design and Prototyping
 
 **Project:** CariSurg AI Emergency Care Platform (AI Emergency Triage)
 **Deployment context:** Mercer General Hospital, Emergency Department
